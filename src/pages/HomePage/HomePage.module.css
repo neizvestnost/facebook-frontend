@@ -1,0 +1,8 @@
+.buttonsContainer {
+  display: flex;
+  justify-content: space-around;
+}
+
+.verticalLine {
+  border-left: 2px solid grey;
+}

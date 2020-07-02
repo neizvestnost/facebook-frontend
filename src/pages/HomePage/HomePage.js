@@ -12,7 +12,7 @@ export default function HomePage() {
           Registration
         </Button>
         <div className={styles.verticalLine} />
-        <Button as={Link} to='/Login' color='facebook'>
+        <Button as={Link} to='/login' color='facebook'>
           Login
         </Button>
       </div>

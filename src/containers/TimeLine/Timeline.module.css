@@ -1,0 +1,23 @@
+.timelineWrapper {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.headerSize {
+  width: 700px;
+}
+
+.searchWrapper{ 
+  display: flex;
+  justify-content: center;
+}
+
+/* .searchInput {
+  margin-left: auto;
+  margin-right: auto;
+  width: 300px;
+  border-radius: 10%;
+  border-radius: 45px;
+  padding: 10px;
+  outline: none;
+} */

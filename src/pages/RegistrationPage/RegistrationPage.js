@@ -1,18 +1,16 @@
 import React, { Component } from 'react'
 import axios from '../../utils/API'
-// import {browserHistory} from 
 import { Container, Button, Form, Message } from 'semantic-ui-react'
-import { Redirect } from 'react-router-dom';
 
 export default class RegistrationPage extends Component {
-  state = { email: '', password: '', errors: [], loading: false, redirect: false }
+  state = { email: '', password: '', errors: [], loading: false }
 
   render() {
-    const { email, password, loading, errors, redirect } = this.state
+    const { email, password, loading, errors } = this.state
     let errorMessage = {}
     errors.map(error => {
       const header = `Incorrect ${error.field.charAt(0).toUpperCase()}${error.field.slice(1)}`
-      errorMessage[error.field] = 
+     return errorMessage[error.field] = 
         <Message
           error
           header={header}
@@ -39,9 +37,8 @@ export default class RegistrationPage extends Component {
             onChange={this.handleChange}
           />
           {!!errors.length && errorMessage.password}
-          <Button type='submit'>Submit</Button>
+          <Button type='submit' color='facebook'>Submit</Button>
         </Form>
-        {redirect && <Redirect to='/login' />}
       </Container>
     )
   }
@@ -65,9 +62,10 @@ export default class RegistrationPage extends Component {
         password: password
       })
 
-      this.setState({ errors: [], redirect: true })
+      this.setState({ errors: [] })
+      this.props.history.push('/login')
     } catch (error) {
-      this.setState(prevState =>({ ...prevState, errors: error.response.data.errors }))
+      this.setState(prevState => ({ ...prevState, errors: error.response.data.errors }))
     } finally {
       this.setState({ loading: false })
     }

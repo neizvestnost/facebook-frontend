@@ -5,7 +5,7 @@ import { Provider } from 'react-redux';
 import PrivateRoute from './containers/PrivateRoute'
 import { rootReducer } from './reducers/rootReducer';
 import createSagaMiddleware from 'redux-saga'
-import { watchFetchDashboard } from './sagas';
+import { rootSaga } from './sagas';
 
 const saga = createSagaMiddleware()
 
@@ -18,7 +18,7 @@ const store = createStore(rootReducer,
   )
 );
 
-saga.run(watchFetchDashboard)
+saga.run(rootSaga)
 
 const HomePage = lazy(() => import('./pages/HomePage/HomePage'));
 const RegistrationPage = lazy(() => import('./pages/RegistrationPage/RegistrationPage'));

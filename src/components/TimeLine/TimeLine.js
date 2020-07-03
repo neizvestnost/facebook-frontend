@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Header, Input, Icon } from 'semantic-ui-react'
 import styles from './Timeline.module.css'
+import PostsList from './PostsList'
 import { connect } from 'react-redux'
 import { fetchDashboard } from '../../actions/dashboard'
+import { filterPosts } from '../../actions/posts'
 
 class TimeLine extends Component {
   state = {
@@ -21,21 +23,23 @@ class TimeLine extends Component {
         <div className={styles.searchWrapper}>
           {this.state.showSearch && this.renderSearch()}
         </div>
-        <div>
-          
-        </div>
+        <main className={styles.postsWrapper}>
+          <PostsList posts={this.props.posts} />
+        </main>
       </div>
     )
   }
 
   renderSearch = () => {
     return (
-      <Input size='large' icon='search' placeholder='Search...' loading={this.state.loading} onChange={this.handleInputChange} />
+      <Input className={styles.search} size='large' icon='search' placeholder='Search...' loading={this.state.loading} onChange={this.handleInputChange} />
     )
   }
 
-  handleInputChange = () => {
-    // send request
+  handleInputChange = (e) => {
+    this.setState({ loading: true })
+    this.props.filterPosts(e.target.value)
+    this.setState({ loading: false })
     // setState
   }
   handleHeaderClick = () => this.setState(prevState => {
@@ -45,7 +49,8 @@ class TimeLine extends Component {
 }
 
 const mapDispatchToProps = {
-  fetchDashboard
+  fetchDashboard,
+  filterPosts
 }
 
 export default connect(null, mapDispatchToProps)(TimeLine)

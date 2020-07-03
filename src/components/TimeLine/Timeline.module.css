@@ -12,6 +12,15 @@
   justify-content: center;
 }
 
+.postsWrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.search {
+  margin-bottom: 15px;
+}
+
 /* .searchInput {
   margin-left: auto;
   margin-right: auto;

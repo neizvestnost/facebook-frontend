@@ -37,10 +37,7 @@ class TimeLine extends Component {
   }
 
   handleInputChange = (e) => {
-    this.setState({ loading: true })
     this.props.filterPosts(e.target.value)
-    this.setState({ loading: false })
-    // setState
   }
   handleHeaderClick = () => this.setState(prevState => {
     const headerIcon = prevState.headerIcon === 'down' ? 'up' : 'down'

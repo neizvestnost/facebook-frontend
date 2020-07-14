@@ -35,7 +35,7 @@ class PostsList extends Component {
               <Divider vertical>Or</Divider>
             </Segment>
           </Card.Content>
-          {post.showComments && <PostComments comments={comments.filter(comment => comment.postId === post.id)} />}
+          {post.showComments && <PostComments comments={comments.filter(comment => comment.postId === post.id)} postId={post.id} userId={this.props.userId} handleAddComment={this.handleAddComment} />}
         </Card>
       )
     })
@@ -45,6 +45,10 @@ class PostsList extends Component {
         {postElements}
       </div>
     )
+  }
+
+  handleAddComment = comment => {
+    this.setState(prevState => ({ comments: [...prevState.comments, comment]}))
   }
 
   handleButtonOnClick = postId => {
@@ -63,7 +67,8 @@ class PostsList extends Component {
     try {
       const response = await axios.get(`/posts/${postId}/comments`)
       this.setState({comments: response.data.comments.data.map(comment => (
-        { id: comment.attributes.id, 
+        {
+          id: comment.attributes.id, 
           body: comment.attributes.body, 
           postId: comment.attributes.post_id,
           userEmail: comment.attributes.user_email
@@ -77,7 +82,12 @@ class PostsList extends Component {
 
 const mapDispatchToProps = {
   showComments
-  // fetchComments
 }
 
-export default connect(null, mapDispatchToProps)(PostsList)
+const mapStateToProps = state => {
+  return {
+    userId: state.user.user.id
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PostsList)

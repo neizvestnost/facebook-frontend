@@ -9,6 +9,8 @@ import axios from '../../../utils/API'
 class PostsList extends Component {
   state = {
     comments: [],
+    page: null,
+    totalPages: null,
     error: null
   }
 
@@ -35,7 +37,15 @@ class PostsList extends Component {
               <Divider vertical>Or</Divider>
             </Segment>
           </Card.Content>
-          {post.showComments && <PostComments comments={comments.filter(comment => comment.postId === post.id)} postId={post.id} userId={this.props.userId} handleAddComment={this.handleAddComment} />}
+          {post.showComments && <PostComments 
+                                  comments={comments.filter(comment => comment.postId === post.id)} 
+                                  postId={post.id} 
+                                  userId={this.props.userId} 
+                                  handleAddComment={this.handleAddComment} 
+                                  page={this.state.page}
+                                  totalPages={this.state.totalPages}
+                                  handleCommentsResponse={this.handleCommentsResponse}
+                                  />}
         </Card>
       )
     })
@@ -55,25 +65,48 @@ class PostsList extends Component {
     const posts = this.props.posts.map(post => post.id === postId ? {...post, showComments: !post.showComments } : {...post, showComments: false })
     this.props.showComments(posts)
 
-    const showPostComments = posts.filter(post => post.showComments)
-
-    if (showPostComments.length) {
-      this.fetchComments(showPostComments[0].id)
+    const post = posts.filter(post => post.showComments)
+    if (post.length) {
+      if (this.state.comments[0]?.postId !== post[0].id) {
+        this.fetchComments(post[0].id)
+      }
     }
-    // showPostComments.length && this.props.fetchComments(showPostComments[0].id)
+  }
+
+  handleCommentsResponse = response => {
+    this.setState(prevState => {
+      return {
+        comments: prevState.comments.concat(response.data.comments.data.map(comment => (
+          {
+            id: comment.attributes.id, 
+            body: comment.attributes.body, 
+            postId: comment.attributes.post_id,
+            userEmail: comment.attributes.user_email
+          }))
+        ),
+        page: parseInt(response.headers['current-page']),
+        totalPages: parseInt(response.headers['total-pages'])
+      }
+    })
   }
 
   fetchComments = async (postId) => {
     try {
       const response = await axios.get(`/posts/${postId}/comments`)
-      this.setState({comments: response.data.comments.data.map(comment => (
-        {
-          id: comment.attributes.id, 
-          body: comment.attributes.body, 
-          postId: comment.attributes.post_id,
-          userEmail: comment.attributes.user_email
+      this.setState(prevState => {
+        return {
+          comments: response.data.comments.data.map(comment => (
+            {
+              id: comment.attributes.id, 
+              body: comment.attributes.body, 
+              postId: comment.attributes.post_id,
+              userEmail: comment.attributes.user_email
+            })
+          ),
+          page: parseInt(response.headers['current-page']),
+          totalPages: parseInt(response.headers['total-pages'])
         }
-      ))})
+      })
     } catch (error) {
       this.setState({ error: error.response.data.error.message })
     }

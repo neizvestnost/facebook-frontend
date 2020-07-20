@@ -1,3 +1,14 @@
 .commentWrapper {
   margin: 10px !important;
 }
+.commentsLoaderWrapper { 
+  display: flex;
+  justify-content: center;
+}
+
+.commentsLoader {
+  cursor: pointer;
+  text-align: center;
+  width: 125px;
+  border-bottom: 1px solid #7f7e88;
+}

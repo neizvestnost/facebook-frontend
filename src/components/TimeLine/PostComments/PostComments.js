@@ -9,7 +9,8 @@ class PostComments extends Component {
   }
 
   render() {
-    const comments = this.props.comments.map(comment => {
+    const { page, totalPages, comments } = this.props
+    const commentsToRender = comments.map(comment => {
       return (
         <Comment key={comment.id} className={styles.commentWrapper}>
           <Comment.Avatar as='a' src='https://react.semantic-ui.com/images/avatar/small/joe.jpg' />
@@ -29,8 +30,9 @@ class PostComments extends Component {
     })
     return(
       <Comment.Group>
-        {comments}
+        {commentsToRender}
 
+        {page !== totalPages ? this.renderLoader() : ''}
         <Form reply size='tiny' onSubmit={this.handleSubmitForm}>
           <Form.TextArea onChange={this.handleOnChange}/>
           <Button content='Add Comment' labelPosition='left' icon='edit' primary />
@@ -38,12 +40,29 @@ class PostComments extends Component {
       </Comment.Group>  
     )
   }
+  renderLoader = () => {
+    return(
+      <div className={styles.commentsLoaderWrapper} onClick={this.handleLoadMoreClick}>
+        <div className={styles.commentsLoader}>
+          Click to load more!)
+        </div>
+      </div>
+    )
+  }
+  handleLoadMoreClick = async () => {
+    try {
+      const response = await axios.get(`/posts/${this.props.postId}/comments?page=${this.props.page + 1}`)
+      this.props.handleCommentsResponse(response)
+    } catch (error) {
+      console.log(error)
+      this.setState({ error: error.data.errors.detail })
+    }
+  }
 
   handleSubmitForm = async () => {
     if (!this.state.text) {
       return this.setState({ error: 'Comment body is empty' })
     }
-    console.log('id',this.props.userId)
     try {
       const response = await axios.post(`/posts/${this.props.postId}/comments`, {
         body: this.state.text,
